@@ -5,9 +5,12 @@ from django.contrib.auth.models import User
 
 
 CATEGORY_CHOICES = (
-    ('S', 'Shirt'),
-    ('SW', 'SportWear'),
-    ('OW', 'OutWear')
+    ('K', 'Kadın'),
+    ('E', 'Erkek'),
+    ('A', 'Ayakkabı'),
+    ('C', 'Çanta'),
+    ('SG', 'Spor Giyim')
+
 )
 LABEL_CHOICES = (
     ('S', 'secondary'),
@@ -30,9 +33,15 @@ class Item(models.Model):
     label = models.CharField(choices=LABEL_CHOICES, max_length=2)
     description = models.TextField()
     image = models.ImageField(default='default.jpg', upload_to='productImages')
+    country = models.CharField(max_length=200,  null=True, choices=CountryField().choices + [('', 'Select Country')])
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse ("product",kwargs={
+            'slug':self.slug
+        })
 
     def get_add_to_cart_url(self):
         return reverse('add_to_cart', kwargs={'slug': self.slug})
@@ -42,7 +51,8 @@ class Item(models.Model):
 
     def get_remove_single_from_cart_url(self):
         return reverse('remove_single_from_cart', kwargs={'slug': self.slug})
-
+class Meta:
+        abstract = True
 
 class OrderItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -97,7 +107,7 @@ class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     street_address = models.CharField(max_length=200)
     apartment_address = models.CharField(max_length=200)
-    country = CountryField(multiple=False)
+    
     zip = models.CharField(max_length=200)
     save_info = models.BooleanField(default=False)
     default = models.BooleanField(default=False)

@@ -2,6 +2,65 @@
 
 
 {% block content %}
+<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+  <div class="container">
+
+    <!-- Brand -->
+    <a class="navbar-brand waves-effect" href="/">
+      <strong class="blue-text">TrendMarket</strong>
+    </a>
+
+    <!-- Collapse -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <!-- Left -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link waves-effect" href="/">Ana Sayfa
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+
+      </ul>
+
+      <form action="{% url 'searchbar' %}" method="get">
+        <input type="text" placeholder="Ara..." name="search" value="{{ request.GET.search }}">
+      
+      </form>
+      
+
+      <!-- Right -->
+      <ul class="navbar-nav nav-flex-icons">
+        {% if request.user.is_authenticated %}
+
+        <li class="nav-item">
+          <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
+            <span class="clearfix d-none d-sm-inline-block"> Çıkış Yap </span>
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link waves-effect" href="{% url 'account_login' %}">
+            <span class="clearfix d-none d-sm-inline-block"> Giriş Yap </span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
+            <span class="clearfix d-none d-sm-inline-block"> Kayıt Ol </span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+  </div>
+</nav>
 
 <main class="mt-5 pt-4">
   <div class="container dark-grey-text mt-5">
@@ -28,13 +87,13 @@
           </p>
           </div>
           
-          <p class="lead font-weight-bold">Description</p>
+          <p class="lead font-weight-bold">Açıklama</p>
           <p>{{object.description}}</p>
 
-            <a href="{{object.get_add_to_cart_url}}" class="btn btn-primary btn-md my-0 p" type="submit">Add to cart
+            <a href="{{object.get_add_to_cart_url}}" class="btn btn-primary btn-md my-0 p" type="submit">Sepete Ekle
             <i class="fas fa-shopping-cart ml-1"></i>
           </a>
-          <a href="{{object.get_remove_from_cart_url}}" class="btn btn-danger btn-md my-0 p" type="submit">Remove from cart
+          <a href="{{object.get_remove_from_cart_url}}" class="btn btn-danger btn-md my-0 p" type="submit">Sepetten Sil
             <i class="fas fa-shopping-cart ml-1"></i>
           </a>
 
@@ -44,10 +103,8 @@
     <hr>
     <div class="row d-flex justify-content-center wow fadeIn">
       <div class="col-md-6 text-center">
-        <h4 class="my-4 h4">Additional information</h4>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus suscipit modi sapiente illo soluta odit
-          voluptates,
-          quibusdam officia. Neque quibusdam quas a quis porro? Molestias illo neque eum in laborum.</p>
+        <h4 class="my-4 h4">Beğenebilceğiniz Ürünler</h4>
+        <p>Bunlara da bakabilirsiniz. Birbirden farklı ürün seçenekleri ve kategorileriyle beraber TrendMarket herkesin 1 numarası.</p>
       </div>
     </div>
     <div class="row wow fadeIn">

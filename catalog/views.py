@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
@@ -8,15 +9,84 @@ from django.views.generic import ListView, DetailView, View
 from .models import Item, Order, OrderItem, Address, Payment, Coupon
 from .forms import AddressForm, CouponForm
 
+
 import stripe
 import json
+
+
+
+
 
 stripe.api_key = ""
 
 
+from django.db.models import Q  # Eklediğimiz Q sınıfını ekleyin
+
+class SearchbarView(ListView):
+    model = Item
+    template_name = 'searchbar.html'
+
+    def get_queryset(self):
+        search_query = self.request.GET.get('search', '')
+        category_filter = self.request.GET.get('category', '')
+        print("Search Query:", search_query)
+
+        # Eğer hem arama sorgusu hem de kategori filtresi varsa
+        if search_query and category_filter:
+            queryset = Item.objects.filter(
+                Q(title__icontains=search_query) |
+                Q(category=category_filter)
+            )
+        # Sadece arama sorgusu varsa
+        elif search_query:
+            queryset = Item.objects.filter(title__icontains=search_query)
+        # Sadece kategori filtresi varsa
+        elif category_filter:
+            queryset = Item.objects.filter(category=category_filter)
+        else:
+            # Herhangi bir filtre yoksa tüm öğeleri alın
+            queryset = Item.objects.all()
+
+        print("Queryset:", queryset)
+        return queryset
+
+
+
+from django.db.models import F
+
+
+from django.db.models import Case, When, Value, IntegerField
+
+from django.db.models import Case, When, Value, IntegerField
+
 class HomeView(ListView):
     model = Item
     template_name = 'home.html'
+
+    def get_queryset(self):
+        sort_option = self.request.GET.get('sort', '')
+
+        if sort_option == 'low_to_high':
+            queryset = Item.objects.all().order_by(
+                Case(
+                    When(discount_price__isnull=True, then='price'),
+                    default='discount_price'
+                )
+            )
+        elif sort_option == 'high_to_low':
+            queryset = Item.objects.all().order_by(
+                Case(
+                    When(discount_price__isnull=True, then='price'),
+                    default='discount_price', output_field=IntegerField()
+                ).desc()
+            )
+        else:
+            queryset = Item.objects.all()
+
+        return queryset
+
+
+ 
 
 
 class ProductDetail(DetailView):
@@ -271,3 +341,14 @@ def remove_single_from_cart(request, slug):
     else:
         messages.info(request, "You don't have an active order!")
         return redirect('order_summary')
+    
+from django.shortcuts import render
+from django.views.generic import ListView
+from .models import Item
+
+
+    
+
+
+
+

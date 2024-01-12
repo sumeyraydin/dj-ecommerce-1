@@ -1,3 +1,4 @@
+
 {% extends "base.html" %} {% block content %}
 <style>
   .small-img{
@@ -5,22 +6,81 @@
     height: 70px;
   }
 </style>
+<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+  <div class="container">
+
+    <!-- Brand -->
+    <a class="navbar-brand waves-effect" href="/">
+      <strong class="blue-text">TrendMarket</strong>
+    </a>
+
+    <!-- Collapse -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      
+      <!-- Left -->
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link waves-effect" href="/">Ana Sayfa
+            <span class="sr-only">(current)</span>
+          </a>
+        </li>
+ 
+      </ul>
+
+      <form action="{% url 'searchbar' %}" method="get">
+        <input type="text" placeholder="Ara..." name="search" value="{{ request.GET.search }}">
+      
+      </form>
+      
+
+      <!-- Right -->
+      <ul class="navbar-nav nav-flex-icons">
+        {% if request.user.is_authenticated %}
+
+        <li class="nav-item">
+          <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
+            <span class="clearfix d-none d-sm-inline-block"> Çıkış Yap </span>
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link waves-effect" href="{% url 'account_login' %}">
+            <span class="clearfix d-none d-sm-inline-block"> Giriş Yap </span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
+            <span class="clearfix d-none d-sm-inline-block"> Kayıt Ol </span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+
+  </div>
+</nav>
 <main class="mt-5 pt-4">
   <div class="container">
     <section class="mb-4">
       {% if order.items.all %}
 
-      <h1>Order summary</h1>
+      <h1>Sepetiniz</h1>
       <div class="table-responsive text-nowrap">
         
         <table class="table">
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col">Item title</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Price</th>
-              <th scope="col">Total Item Price</th>
+              <th scope="col">Ürün Adı</th>
+              <th scope="col">Miktar</th>
+              <th scope="col">Fiyat</th>
+              <th scope="col">Toplam Fiyat</th>
             </tr>
           </thead>
           <tbody>
@@ -58,7 +118,7 @@
             {% empty %}
               <tr>
                 <td colspan="5">
-                  <a href="{% url 'home' %}" class="btn btn-outline-primary float-right">Continue Shopping</a>
+                  <a href="{% url 'home' %}" class="btn btn-outline-primary float-right">Alışverişe Devam Et</a>
                 </td>
               </tr>
             {% endfor %}
@@ -66,7 +126,7 @@
             {% if order.get_total %}
               <tr>
                 <td colspan="4">
-                  <h4>Order total</h4>
+                  <h4>Sipariş Toplam Tutarı</h4>
                 </td>
                 <td colspan="1">
                   ${{order.get_total}}
@@ -74,8 +134,8 @@
               </tr>
               <tr>
                 <td colspan="5">
-                  <a href="{% url 'checkout' %}" class="btn btn-outline-warning float-right ml-2">Prodeed to checkout</a>
-                  <a href="{% url 'home' %}" class="btn btn-outline-primary float-right">Continue Shopping</a>
+                  <a href="{% url 'checkout' %}" class="btn btn-outline-warning float-right ml-2">Ödeme Sayfasına Geç</a>
+                  <a href="{% url 'home' %}" class="btn btn-outline-primary float-right">Alışverişe Devam Et</a>
                 </td>
               </tr>
             {% endif %}
@@ -84,8 +144,8 @@
         </table>
         {% else %}
 
-        <h4 class="mt-5 pt-4">No items in your cart</h4>
-        <a href="{% url 'home' %}" class="btn btn-outline-primary">Continue Shopping</a>
+        <h4 class="mt-5 pt-4">Sepetinde Ürün Bulunamadı</h4>
+        <a href="{% url 'home' %}" class="btn btn-outline-primary">Alışverişe Devam Et</a>
         {% endif %}
 
       </div>

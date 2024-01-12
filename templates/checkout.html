@@ -1,85 +1,253 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
+
+{% load static %}
 
 
-{% block content %}
+<head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/mdb.min.css' %}" rel="stylesheet">
+  link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+</head>
 
-<main class="mt-5 pt-4">
-  <div class="container wow fadeIn">
-    <h2 class="my-5 h2 text-center">Checkout form</h2>
-    <div class="row">
-      <div class="col-md-8 mb-4">
-        <div class="card">
-<!-- 
-          <form action="" method="POST">
-            {% csrf_token %}
-            {{form|crispy}}
-            <button type="submit" class="btn btn-info">Submit</button>
-          </form> -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+    <div class="container">
 
+      <!-- Brand -->
+      <a class="navbar-brand waves-effect" href="/">
+        <strong class="blue-text">TrendMarket</strong>
+      </a>
 
-          <form class="card-body" method="POST">
-            {% csrf_token %}
-            <div class="md-form mb-5">
-              <input type="text" name="street_address" id="street_address" class="form-control" placeholder="1234 Main St" required>
-              <label for="street_address" class="">Street address</label>
-            </div>
-            <div class="md-form mb-5">
-              <input type="text" name="apartment_address" id="apartment_address" class="form-control" placeholder="Apartment or suite" required>
-              <label for="apartment_address" class="">Apartment address</label>
-            </div>
+      <!-- Collapse -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-            <div class="row">
-              <div class="col-lg-4 col-md-12 mb-4">
-                <label for="country">Country</label>
-                {{form.country}}
-                <div class="invalid-feedback">
-                  Please select a valid country.
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-6 mb-4">
-                <label for="zip">Zip</label>
-                <input type="text" name="zip" class="form-control" id="zip" placeholder="Zipcode..." >
-                <div class="invalid-feedback">
-                  Zip code required.
-                </div>
-              </div>
-            </div>
-            <hr>
-            <!-- <div class="custom-control custom-checkbox">
-              <input type="checkbox" name="save_info" class="custom-control-input" id="save_info">
-              <label class="custom-control-label" for="save_info">Save as default address</label>
-            </div>
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" name="use_default" class="custom-control-input" id="use_default">
-              <label class="custom-control-label" for="use_default">Use default address : {{address.street_address}}, {{address.apartment_address}}, {{address.country}}</label>
-            </div>
-            <hr> -->
-            <div class="d-block my-3">
-              <div class="custom-control custom-radio">
-                <input id="stripe" value="S" name="payment_option" type="radio" class="custom-control-input">
-                <label class="custom-control-label" for="stripe">Stripe</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input id="paypal" value="P" name="payment_option" type="radio" class="custom-control-input">
-                <label class="custom-control-label" for="paypal">Paypal</label>
-              </div>
-            </div>
-            <hr class="mb-4">
-            <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to Payment</button>
-          </form>
-        </div>
-      </div>
-      <!--Grid column-->
+      <!-- Links -->
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        
+        <!-- Left -->
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link waves-effect" href="/">Ana Sayfa
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="order-summary">
+            Sepet</a>
+          </li> 
+        </ul>
 
-      <!--Grid column-->
-      <div class="col-md-4 mb-4">
-        {% include "snippet.html" %}
-      </div>
-    </div>
-  </div>
-</main> 
+        <form action="{% url 'searchbar' %}" method="get">
+          <input type="text" placeholder="Ara..." name="search" value="{{ request.GET.search }}">
+        
+        </form>
+        
 
-{% endblock content %}
+        <!-- Right -->
+        <ul class="navbar-nav nav-flex-icons">
+          {% if request.user.is_authenticated %}
   
- 
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_logout' %}">
+              <span class="clearfix d-none d-sm-inline-block"> Çıkış Yap </span>
+            </a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_login' %}">
+              <span class="clearfix d-none d-sm-inline-block"> Giriş Yap </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link waves-effect" href="{% url 'account_signup' %}">
+              <span class="clearfix d-none d-sm-inline-block"> Kayıt Ol </span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+
+    </div>
+  </nav>
+
+<!--Main layout-->
+<main class="mt-5 pt-4">
+    <div class="container">
+        <!-- Heading -->
+        <h2 class="my-5 text-center">Ödeme Sayfası</h2>
+
+        <!--Grid row-->
+        <div class="row">
+            <!--Grid column-->
+            <div class="col-md-8 mb-4">
+                <!--Card-->
+                <div class="card p-4">
+                    <!--Grid row-->
+                    <div class="row mb-3">
+                        <!--Grid column-->
+                        <div class="col-md-6 mb-2">
+                            <!--firstName-->
+                            <div class="form-outline">
+                                <input type="text" id="typeText" class="form-control" />
+                                <label class="form-label" for="typeText">İsim</label>
+                            </div>
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-md-6 mb-2">
+                            <!--lastName-->
+                            <div class="form-outline">
+                                <input type="text" id="typeText" class="form-control" />
+                                <label class="form-label" for="typeText">Soy İsim</label>
+                            </div>
+                        </div>
+                        <!--Grid column-->
+                    </div>
+                    <!--Grid row-->
+
+                    <!--Username-->
+                    <div class="input-group mb-4">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                        <input type="text" class="form-control" placeholder="Kullanıcı Adı" aria-label="Username" aria-describedby="basic-addon1" />
+                    </div>
+
+                    <!--email-->
+                    <p class="mb-0">
+                        Email 
+                    </p>
+                    <div class="form-outline mb-4">
+                         <input type="email" class="form-control" placeholder="ornekemail@ornek.com" aria-label="youremail@example.com" aria-describedby="basic-addon1" />
+                    </div>
+
+                    <!--address-->
+                    <p class="mb-0">
+                        Adres
+                    </p>
+                    <div class="form-outline mb-4">
+                        <input type="email" class="form-control" placeholder="1234 Ana Sokak" aria-label="1234 Main St" aria-describedby="basic-addon1" />
+                    </div>
+
+                    <!--address-2-->
+                    <p class="mb-0">
+                        Adres 2 
+                    </p>
+                    <div class="form-outline mb-4">
+                        <input type="email" class="form-control" placeholder="Apartman ya da Daire" aria-label="Apartment or suite" aria-describedby="basic-addon1" />
+                    </div>
+
+                    <!--Grid row-->
+                    <div class="row">
+                        <!--Grid column-->
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            
+                            <div class="form-outline mb-4">
+                        <input type="email" class="form-control" placeholder="United States" aria-label="United States" aria-describedby="basic-addon1" />
+                    </div>
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <p class="mb-0">
+                                Bölge
+                            </p>
+                            <div class="form-outline mb-4">
+                        
+                    </div>
+                        </div>
+                        <!--Grid column-->
+
+                        <!--Grid column-->
+                        <div class="col-lg-4 col-md-12 mb-4">
+                            <p class="mb-0">
+                                Zip
+                            </p>
+                            <div class="form-outline">
+                                <input type="text" class="form-control"/>
+                            </div>
+                        </div>
+                        <!--Grid column-->
+                    </div>
+                    <!--Grid row-->
+
+                    <hr />
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">Gönderim Adresi Fatura Adresim ile Aynı</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">Bir sonraki alışveriş için bilgilerimi sakla</label>
+                    </div>
+
+                    <hr />
+
+                    <div class="my-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked />
+                            <label class="form-check-label" for="flexRadioDefault1"> Kredi Kart </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" />
+                            <label class="form-check-label" for="flexRadioDefault2"> Banka Kartı </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" />
+                            <label class="form-check-label" for="flexRadioDefault3"> Paypal </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3">
+                            <p class="mb-0">
+                                Kartın üzerindeki isim
+                            </p>
+                            <div class="form-outline">
+                                <input type="text" class="form-control"/>
+                                <div class="form-helper">Kartın üzerindeki tam isim</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <p class="mb-0">
+                               Kredi kartı numarası
+                            </p>
+                            <div class="form-outline">
+                                <input type="text" class="form-control" />                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <p class="mb-0">
+                                Son kullanma tarihi
+                            </p>
+                            <div class="form-outline">
+                                <input type="text" class="form-control" />
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <p class="mb-0">
+                                CVV
+                            </p>
+                            <div class="form-outline">
+                                <input type="text" class="form-control" />
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="mb-4" />                    
+                  <button class="btn btn-primary" type="button">Ödeme adımına devam et</button>
+                </div>
+                <!--/.Card-->
+            </div>
+            <div class="col-md-4 mb-4">
+              {% include "snippet.html" %}
+            </div>
+            <!--Grid column-->
+
+</main>
